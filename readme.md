@@ -2,5 +2,7 @@
 
 执行`get_all_model.sh`来获取所有量化模型
 
-执行`get_genai_profile.sh`来获取模型的perlayer的profile性能
+执行`get_genai_profile.sh`来获取模型的perlayer的profile性能(genai)
+
+执行`get_openvino_profile.sh`来获取模型的perlayer的profile性能(openvino)
 
