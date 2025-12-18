@@ -1,2 +1,10 @@
 .venv
 openvino.genai
+build
+openvino/build
+openvino.genai/build
+install
+model
+bin
+openvino
+.vscode
