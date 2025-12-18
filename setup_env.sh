@@ -1,6 +1,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR=$SCRIPT_DIR
 
 python3 -m venv ./.venv
 source ./.venv/bin/activate
@@ -32,9 +33,18 @@ cd ..
 cmake --install ./build --prefix ../install
 
 echo "OpenVINO build and installation complete."
+
+echo "ONEDNN build start"
+cd $ROOT_DIR/openvino/src/plugins/intel_cpu/thirdparty/onednn
+mkdir -p build ; cd build
+cmake .. -DONEDNN_BUILD_DOC=OFF -DONEDNN_BUILD_EXAMPLES=OFF -DONEDNN_GPU_VENDOR=NONE -DCMAKE_BUILD_TYPE=Release
+cmake --build . --parallel $(nproc)
+cp -r ./build/tests/benchdnn $ROOT_DIR/bin/onednn_bench
+echo "ONEDNN build complete."
+
 source ./install/setupvars.sh
 
-cd openvino.genai
+cd $ROOT_DIR/openvino.genai
 echo "Environment variables set up for OpenVINO GenAI."
 
 cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/
