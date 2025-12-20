@@ -27,7 +27,7 @@ echo "Building OpenVINO"
 cd openvino
 sudo ./install_build_dependencies.sh
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DEBUG_CAPS=ON ..
 cmake --build . --parallel
 cd ..
 cmake --install ./build --prefix ../install
