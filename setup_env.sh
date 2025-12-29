@@ -58,6 +58,6 @@ echo "OpenVINO GenAI installation complete."
 
 echo "To use OpenVINO GenAI, build the samples located in the 'samples' directory."
 cd ../install
-cd samples
+cd samples/cpp
 ./build_samples.sh -i $SCRIPT_DIR/bin
 echo "Sample build complete. You can now run the samples." 
