@@ -18,7 +18,7 @@ optimum-cli export openvino \
     --model meta-llama/Llama-3.2-1B-Instruct \
     --quant-mode nf4_f8e4m3 \
     --dataset wikitext2 \
-    "$SCRIPT_DIR/model/nvfp4"
+    "$SCRIPT_DIR/model/nf4"
 
 optimum-cli export openvino \
     --model meta-llama/Llama-3.2-1B-Instruct \

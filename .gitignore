@@ -8,3 +8,7 @@ model
 bin
 openvino
 .vscode
+/*.csv
+/*.log
+__pycache__
+/*model

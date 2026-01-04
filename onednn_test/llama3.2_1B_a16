@@ -1,0 +1,42 @@
+# llama3.2-1B
+--reset
+#proj_q
+ --dir=FWD_I --dt=bf16 mb128ic2048oc2048nproj_q_a16
+#proj_kv
+ --dir=FWD_I --dt=bf16 mb128ic2048oc512nproj_kv_a16
+#score
+ --dir=FWD_I --dt=bf16 mb128ic64oc4096nscore_a16
+#attn_out
+ --dir=FWD_I --dt=bf16 mb128ic128oc2048nattn_out_a16
+#proj_o
+ --dir=FWD_I --dt=bf16 mb128ic2048oc2048nproj_o_a16
+#ffn_up
+ --dir=FWD_I --dt=bf16 mb128ic2048oc8192nffn_up_a16
+#ffn_gate
+ --dir=FWD_I --dt=bf16 mb128ic2048oc8192nffn_gate_a16
+#ffn_down
+ --dir=FWD_I --dt=bf16 mb128ic8192oc2048nffn_down_a16
+
+--reset
+#cold-cache=wei
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic2048oc2048nproj_q_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic2048oc512nproj_kv_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic64oc4096nscore_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic128oc2048nattn_out_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic2048oc2048nproj_o_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic2048oc8192nffn_up_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic2048oc8192nffn_gate_cold_wei_a16
+--dir=FWD_I --dt=bf16 --cold-cache=wei mb128ic8192oc2048nffn_down_cold_wei_a16
+
+--reset
+#cold-cache=all
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic2048oc2048nproj_q_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic2048oc512nproj_kv_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic64oc4096nscore_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic128oc2048nattn_out_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic2048oc2048nproj_o_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic2048oc8192nffn_up_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic2048oc8192nffn_gate_cold_all_a16
+--dir=FWD_I --dt=bf16 --cold-cache=all mb128ic8192oc2048nffn_down_cold_all_a16
+
+
