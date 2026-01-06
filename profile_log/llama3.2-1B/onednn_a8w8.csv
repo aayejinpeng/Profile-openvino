@@ -1,0 +1,28 @@
+Output template: perf,%engine%,%impl%,%name%,%prb%,%Gops%,%+ctime%,%-time%,%-Gflops%,%0time%,%0Gflops%
+perf,cpu,brgemm:avx10_1_512_amx,proj_q_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_q_a8,1.07374,1.17285,0.608154,1765.57,0.647477,1658.35
+perf,cpu,brgemm:avx10_1_512_amx,proj_kv_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc512nproj_kv_a8,0.268435,0.891846,0.0883789,3037.32,0.0907197,2958.96
+perf,cpu,brgemm:avx10_1_512_amx,score_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic64oc4096nscore_a8,0.0671089,0.494629,0.183105,366.504,0.186641,359.562
+perf,cpu,brgemm:avx10_1_512_amx,attn_out_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic128oc2048nattn_out_a8,0.0671089,0.49707,0.0593262,1131.18,0.0627155,1070.05
+perf,cpu,brgemm:avx10_1_512_amx,proj_o_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_o_a8,1.07374,0.00878906,0.628662,1707.98,0.648166,1656.58
+perf,cpu,brgemm:avx10_1_512_amx,ffn_up_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_up_a8,4.29497,0.86084,2.573,1669.25,2.61804,1640.53
+perf,cpu,brgemm:avx10_1_512_amx,ffn_gate_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_gate_a8,4.29497,0.0102539,2.56982,1671.31,2.62221,1637.92
+perf,cpu,brgemm:avx10_1_512_amx,ffn_down_a8,--mode=P --ip --dir=FWD_I --dt=s8:s8:s8 mb128ic8192oc2048nffn_down_a8,4.29497,1.96143,2.72827,1574.24,2.80019,1533.81
+perf,cpu,brgemm:avx10_1_512_amx,proj_q_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_q_cold_wei_a8,1.07374,0.0109863,0.643799,1667.82,0.826447,1299.23
+perf,cpu,brgemm:avx10_1_512_amx,proj_kv_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc512nproj_kv_cold_wei_a8,0.268435,0.0187988,0.143066,1876.3,0.15705,1709.24
+perf,cpu,brgemm:avx10_1_512_amx,score_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic64oc4096nscore_cold_wei_a8,0.0671089,0.0192871,0.184814,363.115,0.188956,355.155
+perf,cpu,brgemm:avx10_1_512_amx,attn_out_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic128oc2048nattn_out_cold_wei_a8,0.0671089,0.0195312,0.0725098,925.515,0.0842933,796.135
+perf,cpu,brgemm:avx10_1_512_amx,proj_o_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_o_cold_wei_a8,1.07374,0.0192871,0.637695,1683.79,0.829801,1293.97
+perf,cpu,brgemm:avx10_1_512_amx,ffn_up_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_up_cold_wei_a8,4.29497,0.0195312,3.41357,1258.2,3.4883,1231.25
+perf,cpu,brgemm:avx10_1_512_amx,ffn_gate_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_gate_cold_wei_a8,4.29497,0.0256348,3.41919,1256.14,3.48916,1230.95
+perf,cpu,brgemm:avx10_1_512_amx,ffn_down_cold_wei_a8,--mode=P --ip --cold-cache=wei --dir=FWD_I --dt=s8:s8:s8 mb128ic8192oc2048nffn_down_cold_wei_a8,4.29497,0.0187988,3.54688,1210.92,3.66973,1170.38
+perf,cpu,brgemm:avx10_1_512_amx,proj_q_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_q_cold_all_a8,1.07374,0.0212402,0.811523,1323.12,0.846004,1269.19
+perf,cpu,brgemm:avx10_1_512_amx,proj_kv_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc512nproj_kv_cold_all_a8,0.268435,0.0178223,0.155273,1728.79,0.184001,1458.88
+perf,cpu,brgemm:avx10_1_512_amx,score_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic64oc4096nscore_cold_all_a8,0.0671089,0.0185547,0.187012,358.848,0.21086,318.262
+perf,cpu,brgemm:avx10_1_512_amx,attn_out_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic128oc2048nattn_out_cold_all_a8,0.0671089,0.0185547,0.0776367,864.396,0.0954543,703.047
+perf,cpu,brgemm:avx10_1_512_amx,proj_o_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc2048nproj_o_cold_all_a8,1.07374,0.020752,0.812256,1321.93,0.842588,1274.34
+perf,cpu,brgemm:avx10_1_512_amx,ffn_up_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_up_cold_all_a8,4.29497,0.0200195,3.41382,1258.11,3.61545,1187.95
+perf,cpu,brgemm:avx10_1_512_amx,ffn_gate_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic2048oc8192nffn_gate_cold_all_a8,4.29497,0.0200195,3.41089,1259.19,3.52651,1217.91
+perf,cpu,brgemm:avx10_1_512_amx,ffn_down_cold_all_a8,--mode=P --ip --cold-cache=all --dir=FWD_I --dt=s8:s8:s8 mb128ic8192oc2048nffn_down_cold_all_a8,4.29497,0.0187988,3.58887,1196.75,3.79553,1131.58
+tests:24 passed:24 skipped:0 mistrusted:0 unimplemented:0 invalid_arguments:0 failed:0 listed:0
+total perf: min(ms):33.9575 avg(ms):35.5263
+total: 86.93s; create_pd: 0.00s (0%); create_prim: 0.01s (0%); fill: 3.73s (4%); execute: 0.03s (0%);
