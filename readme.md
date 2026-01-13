@@ -10,3 +10,4 @@
 
 执行`get_onednn_profile.sh`来获取特定模型下，特定数据格式矩阵乘的onednn算子的性能，需要修改`onednn_test/llama3.2-1B`下的内容，并保存到`model/特定模型下`，根据自己需求修改其配置。`./get_onednn_profile.sh -m -`
 
+profile子仓库，涵盖了更详细的profile流程和操作
