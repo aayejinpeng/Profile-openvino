@@ -15,9 +15,12 @@ Required:
                             Use '-' to run ALL models under ./model.
 
 Optional:
-    -o, --out-root <dir>       Output root dir (default: ./profile_log)
+  -o, --out-root <dir>       Output root dir (default: ./profile_log)
   -c, --cores <list>         taskset core list (default: 0)
-  -s, --max-seq <n>          Max sequence length (default: 16384)
+  -dl, --default-seqlens <preset>  Use preset seqlen sequence:
+                              log2: 1,2,4,8,...,16384 (default)
+                              add128: 1,2,4,...,256,384,512,...,16384 (step 128 after 256)
+  -l, --seqlens <list>       Explicit seqlens (comma-separated), overrides -dl
   -h, --help                 Show this help.
 
 Model layouts supported:
@@ -33,12 +36,13 @@ EOF
 MODELS_ROOT_DIR="$ROOT_DIR/model"
 OUT_ROOT_DEFAULT="$ROOT_DIR/profile_log"
 CORE_LIST_DEFAULT="0"
-MAX_SEQ_DEFAULT="16384"
+DEFAULT_SEQLENS_PRESET="log2"
 
 MODEL_NAME=""
 OUT_ROOT="$OUT_ROOT_DEFAULT"
 CORE_LIST="$CORE_LIST_DEFAULT"
-MAX_SEQ="$MAX_SEQ_DEFAULT"
+SEQLENS=""
+DEFAULT_PRESET="$DEFAULT_SEQLENS_PRESET"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -48,8 +52,10 @@ while [[ $# -gt 0 ]]; do
             OUT_ROOT="$2"; shift 2 ;;
         -c|--cores)
             CORE_LIST="$2"; shift 2 ;;
-        -s|--max-seq)
-            MAX_SEQ="$2"; shift 2 ;;
+        -dl|--default-seqlens)
+            DEFAULT_PRESET="$2"; shift 2 ;;
+        -l|--seqlens)
+            SEQLENS="$2"; shift 2 ;;
         -h|--help)
             usage; exit 0 ;;
         *)
@@ -64,6 +70,36 @@ if [[ -z "$MODEL_NAME" ]]; then
     echo "Missing required argument: -m/--model-name" >&2
     usage
     exit 2
+fi
+
+# Generate seqlen list: explicit -l overrides -dl preset
+SEQLENS_SUFFIX=""
+if [[ -n "$SEQLENS" ]]; then
+    # User provided explicit -l
+    SEQLENS_SUFFIX="custom"
+else
+    # Use -dl preset
+    SEQLENS_SUFFIX="$DEFAULT_PRESET"
+    case "$DEFAULT_PRESET" in
+        log2)
+            SEQLENS="1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384"
+            ;;
+        add128)
+            # 1,2,4,8,16,32,64,128,256, then 384..16384 step 128
+            base="1,2,4,8,16,32,64,128,256"
+            seq_add128=""
+            for ((i=384; i<=16384; i+=128)); do
+                seq_add128="${seq_add128}${i},"
+            done
+            seq_add128="${seq_add128%,}"
+            SEQLENS="${base},${seq_add128}"
+            ;;
+        *)
+            echo "Unknown -dl preset: $DEFAULT_PRESET" >&2
+            echo "Supported: log2, add128" >&2
+            exit 2
+            ;;
+    esac
 fi
 
 mkdir -p "$ROOT_DIR/profile_log"
@@ -104,7 +140,7 @@ is_ov_export_dir() {
 run_group() {
     local group_name="$1"   # top-level folder name under model/
     shift
-    local out_csv="$OUT_ROOT/${group_name//\//__}/genai_tokens_per_s.csv"
+    local out_csv="$OUT_ROOT/${group_name//\//__}/genai_tokens_per_s_${SEQLENS_SUFFIX}.csv"
     mkdir -p "$(dirname "$out_csv")"
 
     local tmp_root
@@ -134,13 +170,19 @@ run_group() {
     fi
 
     echo "Collecting tokens/s: $group_name -> $out_csv"
-    python "$ROOT_DIR/collect_genai_tokens_per_s.py" \
-        --root "$tmp_root" \
-        --binary "$ROOT_DIR/bin/samples_bin/benchmark_genai" \
-        --models "${labels[@]}" \
-        --max-seq "$MAX_SEQ" \
-        --cpu-core "$CORE_LIST" \
+    cmd=(
+        python "$ROOT_DIR/collect_genai_tokens_per_s.py"
+        --root "$tmp_root"
+        --binary "$ROOT_DIR/bin/samples_bin/benchmark_genai"
+        --models "${labels[@]}"
+        --seqlens "$SEQLENS"
+        --cpu-core "$CORE_LIST"
         --out "$out_csv"
+    )
+    printf 'CMD:'
+    printf ' %q' "${cmd[@]}"
+    printf '\n'
+    "${cmd[@]}"
 }
 
 found_any=0

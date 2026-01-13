@@ -18,18 +18,46 @@ _THROUGHPUT_RE = re.compile(
 )
 
 
-def gen_seqlens(max_seq: int) -> list[int]:
-    if max_seq < 1:
-        raise ValueError("max_seq must be >= 1")
-    seqs = [1]
-    while True:
-        nxt = seqs[-1] * 2
-        if nxt > max_seq:
-            break
-        seqs.append(nxt)
-    if seqs[-1] != max_seq:
-        seqs.append(max_seq)
-    return seqs
+DEFAULT_SEQLENS: list[int] = [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+]
+
+
+def parse_seqlens_arg(values: list[str]) -> list[int]:
+    # Accept both comma-separated and space-separated forms.
+    tokens: list[str] = []
+    for v in values:
+        tokens.extend([t for t in v.split(",") if t != ""])
+
+    seqlens: list[int] = []
+    seen: set[int] = set()
+    for t in tokens:
+        try:
+            n = int(t)
+        except ValueError as e:
+            raise ValueError(f"Invalid seqlen: {t!r}") from e
+        if n < 1:
+            raise ValueError(f"seqlen must be >= 1, got {n}")
+        if n not in seen:
+            seen.add(n)
+            seqlens.append(n)
+    if not seqlens:
+        raise ValueError("seqlens list is empty")
+    return seqlens
 
 
 def parse_throughput_tokens_per_s(output: str) -> float | None:
@@ -72,7 +100,16 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent)
     parser.add_argument("--binary", type=Path, default=None, help="Path to benchmark_genai binary")
     parser.add_argument("--models", nargs="+", default=["a8w8", "f8e4m3", "nvfp4", "WOi4", "WOi8", "WOmxfp4", "WOnf4"])
-    parser.add_argument("--max-seq", type=int, default=16386)
+    parser.add_argument(
+        "--seqlens",
+        nargs="+",
+        default=None,
+        help=(
+            "Explicit seqlen list. Accepts comma-separated or space-separated values, e.g. "
+            "--seqlens 1,2,4,8 or --seqlens 1 2 4 8. Overrides --max-seq."
+        ),
+    )
+    # Keep the CLI minimal and explicit: either use --seqlens or default list.
     parser.add_argument("--cpu-core", default="0", help="CPU core list passed to taskset -c (set empty to disable taskset)")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -87,7 +124,11 @@ def main() -> int:
 
     cpu_core = args.cpu_core if args.cpu_core != "" else None
 
-    seqlens = gen_seqlens(args.max_seq)
+    try:
+        seqlens = parse_seqlens_arg(args.seqlens) if args.seqlens is not None else DEFAULT_SEQLENS
+    except ValueError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 2
 
     rows: list[tuple[int, dict[str, float | None]]] = [
         (seqlen, {m: None for m in args.models}) for seqlen in seqlens
